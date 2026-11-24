@@ -13,7 +13,7 @@ An offline C++17 surface inspection and shop-floor advisory system built for Ras
 
 Stage-0 routes frames across 6 classes (`steel_sheet`, `aluminium`, `weld`, `casting`, `machined_part`, `not_metal`). Detected defects are normalized by `config/edge_qc_config.json` into 8 unified groups (`scratch`, `pit_void`, `crack`, `stain_oxide`, `inclusion_slag`, `weld_porosity`, `deformation`, `machining_tear`), assigned severity (`NONE`, `MINOR`, `MODERATE`, `CRITICAL`) and verdict (`PASS`, `REVIEW`, `REJECT`), and queued asynchronously to the resident Llama daemon after 4 centered frames in DEMO mode (or 4 consecutive matching frames on video/camera streams).
 
-CPU affinity (`include/cpu_affinity.hpp`) pins Core 0 to the HTTP server and lifecycle control, Core 1 to vision and PatchCore inference, and Cores 2-3 to the resident Llama daemon (2 worker threads on 4-core hosts).
+CPU affinity (`include/cpu_affinity.hpp`) pins Core 0 to the HTTP server and lifecycle control, Core 1 to vision and PatchCore inference, and Cores 2-3 to the resident Llama daemon (config cap `llm.cpu_threads=4` is clamped at runtime in `src/llama_resident.cpp` to 2 worker threads on 4-core Raspberry Pi 5 hosts).
 
 ## Hardware and Environment
 
@@ -127,18 +127,19 @@ Keyboard shortcuts: `1`-`5` switch modes, `Space` toggles pause/resume, `P` goes
 
 ## Datasets and Measured Results
 
-Training and evaluation datasets covered NEU-DET (steel surface defects), GC10-DET (wide steel strip defects), MVTec AD (`metal_nut` and `screw` anomalies), plus welding porosity, casting, aluminium, non-metal, and clean steel collections (with X-SDD and KolektorSDD2 held out for unseen cross-domain YOLO11n evaluation).
+Training and evaluation datasets covered NEU-DET (steel surface defects), GC10-DET (wide steel strip defects), MVTec AD (`metal_nut` and `screw` anomalies), plus welding porosity, casting, aluminium, non-metal, and clean steel collections.
 
 | Metric | Result |
 | :--- | :--- |
 | Part inspection rate | 13.0 to 15.3 FPS |
-| Vision cycle latency | 65.4 to 76.9 ms |
-| Time to first token (TTFT) | 1,491 to 2,070 ms |
-| Advisory generation rate | 13.2 to 13.8 tokens/s |
-| Total advisory latency | 4,639 to 6,126 ms |
+| Vision cycle latency (per-image) | 65.4 to 76.9 ms |
+| Time to first token (TTFT) | 1,588 to 1,925 ms |
+| Advisory generation rate | 13.8 to 15.1 tokens/s |
+| Total advisory latency | 4,162 to 5,963 ms |
+| End-to-end latency (frame to advisory) | 4,236 to 6,038 ms (vision cycle + Llama advisory on locked part) |
 | Material routing accuracy | 97.3% Val Top-1 (100.0% Top-5 on 875 images); 100.0% (26/26) on bundled E2E suite |
-| Defect precision and recall | 77.5% / 73.0% (Unified YOLO11n-640 Val, 827 images / 1,455 instances) |
-| Detection mAP | 50.9% mAP@50-95 (80.48% mAP@50; unseen X-SDD / KolektorSDD2: 85.2% / 88.9% mAP@50) |
+| Defect precision, recall and F1 | 77.5% precision / 73.0% recall / 75.2% F1 (0.75) (Unified YOLO11n-640 Val, 827 images / 1,455 instances) |
+| Detection mAP | 50.9% mAP@50-95 (80.48% mAP@50 on Unified YOLO11n-640 Val, 827 images / 1,455 instances) |
 | Anomaly detection AUROC | 0.9905 Image / 0.9778 Pixel AUROC (MVTec `metal_nut`, 93.83% acc); 0.8200 Image AUROC / 93.3% GT hit (MVTec `screw`) |
 | Completed inspection throughput | 4.4 to 4.7 parts/min (14-15 stations logged in ~190 s with Llama advisory + 4 s hold) |
 | Peak resident memory | 203.92-351.5 MiB (`bharat_qc_native.bin`) + ~889 MiB (`llama_daemon`) ≈ 1.07-1.21 GiB (<16% of 8 GB RAM) |

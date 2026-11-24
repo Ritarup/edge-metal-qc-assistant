@@ -3,6 +3,7 @@
 #include "metallic_gate_neon.hpp"
 #include "patchcore_engine.hpp"
 #include "vector_math.hpp"
+#include "hailo_yolo_heads.hpp"
 
 #include <algorithm>
 #include <chrono>
@@ -1730,6 +1731,10 @@ struct HailoVisionEngine::Impl {
     std::unique_ptr<hailort::InferVStreams> infer_pipeline;
     std::string input_vstream_name;
     std::string output_vstream_name;
+    std::vector<std::vector<float>> hailo_out_bufs;  // one per output vstream, reused
+    std::vector<float> hailo_packed;                  // decoded [1, 4+nc, N] tensor, reused
+    bool hailo_error_logged = false;
+    bool hailo_layout_logged = false;
 #endif
     bool hailo_configured = false;
 
@@ -1803,22 +1808,78 @@ struct HailoVisionEngine::Impl {
 
         auto out_vstreams = infer_pipeline->get_output_vstreams();
         if (out_vstreams.empty()) return false;
-        size_t out_frame_size = out_vstreams[0].get().get_frame_size();
-        auto out_info = out_vstreams[0].get().get_info();
-        std::vector<float> out_buf(out_frame_size / sizeof(float), 0.0f);
 
+        // HailoRT requires a buffer for EVERY output vstream. A .hef compiled without
+        // on-chip NMS exposes 6 raw YOLO heads (3x box 64ch + 3x cls), not one tensor.
+        hailo_out_bufs.resize(out_vstreams.size());
         std::map<std::string, hailort::MemoryView> in_map;
         std::map<std::string, hailort::MemoryView> out_map;
         in_map.emplace(input_vstream_name, hailort::MemoryView(hwc_input.data(), hwc_input.size()));
-        out_map.emplace(output_vstream_name, hailort::MemoryView(out_buf.data(), out_buf.size() * sizeof(float)));
+        for (size_t i = 0; i < out_vstreams.size(); ++i) {
+            auto& vs = out_vstreams[i].get();
+            hailo_out_bufs[i].resize(vs.get_frame_size() / sizeof(float));
+            out_map.emplace(vs.name(), hailort::MemoryView(
+                hailo_out_bufs[i].data(), hailo_out_bufs[i].size() * sizeof(float)));
+        }
 
         auto t_inf0 = SteadyClock::now();
         hailo_status status = infer_pipeline->infer(in_map, out_map, 1);
         auto t_inf1 = SteadyClock::now();
         accum_infer_ms += elapsed_ms(t_inf0, t_inf1);
 
-        if (status != HAILO_SUCCESS) return false;
+        if (status != HAILO_SUCCESS) {
+            if (!hailo_error_logged) {
+                std::cerr << "[HailoVisionEngine] Hailo infer failed (status=" << status
+                          << "); falling back to ONNX Runtime for this pass." << std::endl;
+                hailo_error_logged = true;
+            }
+            return false;
+        }
 
+        if (out_vstreams.size() > 1) {
+            auto t_post0 = SteadyClock::now();
+            std::vector<YoloRawHead> heads;
+            heads.reserve(out_vstreams.size());
+            for (size_t i = 0; i < out_vstreams.size(); ++i) {
+                auto info = out_vstreams[i].get().get_info();
+                heads.push_back({hailo_out_bufs[i].data(),
+                                 static_cast<int>(info.shape.height),
+                                 static_cast<int>(info.shape.width),
+                                 static_cast<int>(info.shape.features)});
+                if (!hailo_layout_logged) {
+                    const auto order = out_vstreams[i].get().get_user_buffer_format().order;
+                    std::cout << "[HailoVisionEngine] output " << out_vstreams[i].get().name()
+                              << " " << info.shape.height << "x" << info.shape.width
+                              << "x" << info.shape.features
+                              << " host_order=" << static_cast<int>(order)
+                              << ((order == HAILO_FORMAT_ORDER_NHWC || order == HAILO_FORMAT_ORDER_FCR) ? " (NHWC-compatible)" : " (unexpected order!)")
+                              << std::endl;
+                }
+            }
+            hailo_layout_logged = true;
+
+            std::vector<int64_t> packed_shape;
+            if (!assemble_yolo_raw_heads(heads, num_classes, input_size, min_conf,
+                                         hailo_packed, packed_shape)) {
+                if (!hailo_error_logged) {
+                    std::cerr << "[HailoVisionEngine] Unrecognised .hef output heads (expected "
+                              << "box 64ch + cls " << num_classes << "ch per stride); "
+                              << "falling back to ONNX Runtime." << std::endl;
+                    hailo_error_logged = true;
+                }
+                return false;
+            }
+            decode_yolo_tensor_into(
+                hailo_packed.data(), packed_shape, num_classes, input_size, min_conf,
+                tile, meta, orig_w, orig_h, rules, out_candidates
+            );
+            accum_infer_ms += elapsed_ms(t_post0, SteadyClock::now());
+            return true;
+        }
+
+        // Single-output .hef (e.g. exported with a fused [1, 4+nc, N] head).
+        auto out_info = out_vstreams[0].get().get_info();
+        std::vector<float>& out_buf = hailo_out_bufs[0];
         std::vector<int64_t> shape = {
             1,
             static_cast<int64_t>(out_info.shape.features),

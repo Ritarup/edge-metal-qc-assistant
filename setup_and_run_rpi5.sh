@@ -39,14 +39,14 @@ mkdir -p "$ROOT_DIR/bin" "$ROOT_DIR/obj" "$ROOT_DIR/uploads" "$ROOT_DIR/snapshot
 
 # 3. Detect Hailo-8L NPU vs ONNX Runtime ARM64 CPU fallback
 BUILD_HAILO=0
-if [[ -e /dev/hailo0 ]] && [[ -f /usr/include/hailo/hailort.hpp ]] && \
-   (ldconfig -p 2>/dev/null | grep -q "libhailort" || [[ -f /usr/lib/libhailort.so ]]); then
+if [[ -e /dev/hailo0 ]] && { [[ -f /usr/include/hailo/hailort.hpp ]] || [[ -f /usr/local/include/hailo/hailort.hpp ]]; } && \
+   (ldconfig -p 2>/dev/null | grep -q "libhailort" || [[ -f /usr/lib/libhailort.so ]] || [[ -f /usr/local/lib/libhailort.so ]]); then
   BUILD_HAILO=1
   echo "[2/6] Hailo-8L NPU (/dev/hailo0 + libhailort) detected -> building with HAILO=1."
 else
   echo "[2/6] Hailo-8L driver/dev headers not detected -> building ARM64 CPU fallback (ONNX Runtime)."
   if [[ -e /dev/hailo0 ]]; then
-    echo "      (Hint: /dev/hailo0 exists; install Hailo headers with: sudo apt-get install -y hailo-all dkms pciutils)"
+    echo "      (Hint: /dev/hailo0 exists; build HailoRT + hailort-drivers from the hailo8 branch of github.com/hailo-ai)"
   fi
 fi
 

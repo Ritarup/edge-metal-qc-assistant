@@ -33,7 +33,7 @@ export LD_LIBRARY_PATH="${SCRIPT_DIR}/bin:${ORT_LIB}${EXTRA_LIBS}:/usr/lib:/usr/
 if [ -e "/dev/hailo0" ] && [ -f "models/unified_yolo11_640.hef" ]; then
     BACKEND_MSG="Hailo-8L NPU (/dev/hailo0) + ARM64 ONNX Runtime"
 else
-    BACKEND_MSG="ARM64 ONNX Runtime (CPU Fallback â€” /dev/hailo0 absent)"
+    BACKEND_MSG="ARM64 ONNX Runtime (CPU Fallback - /dev/hailo0 absent)"
 fi
 
 echo "=================================================================="

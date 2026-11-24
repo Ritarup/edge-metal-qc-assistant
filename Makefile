@@ -45,7 +45,7 @@ ifeq ($(HAILO), 1)
     CXXFLAGS += -I/usr/include/hailort -DHAVE_HAILORT -DUSE_HAILO
     LDFLAGS  += -lhailort
 else ifeq ($(HAILO), auto)
-    ifneq ($(wildcard /usr/include/hailort/*),)
+    ifneq ($(wildcard /usr/include/hailo/hailort.hpp /usr/local/include/hailo/hailort.hpp),)
         CXXFLAGS += -I/usr/include/hailort -DHAVE_HAILORT -DUSE_HAILO
         LDFLAGS  += -lhailort
     endif
