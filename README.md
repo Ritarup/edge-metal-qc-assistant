@@ -2,7 +2,6 @@
 
 Bharat AI-SoC Challenge 2026-27 — Problem Statement 5  
 Team: Pritish Mondal, Ritendu Sarkar, and Ritarup Tripathy  
-Institute: Jadavpur University, Kolkata  
 Repository: https://github.com/Ritarup/edge-metal-qc-assistant  
 LLM Weights: https://huggingface.co/ritarup/Llama-3.2-1B-UnifiedQC-FT-INT4
 
@@ -34,7 +33,7 @@ CPU affinity (`include/cpu_affinity.hpp`) pins Core 0 to the HTTP server and lif
 | Stage-0 Material Router | `models/stage0_selector_224.onnx` | YOLO11n-cls `224x224`, 6 classes (5.90 MiB) |
 | Stage-1 Defect Detector | `models/unified_yolo11_640.hef` | YOLO11n `640x640` INT8, 8 defect groups, Hailo DFC 3.34.0 (10.53 MiB) |
 | Screw Feature Extractor | `models/screw_patchcore_feat.onnx` | ResNet-18 `layer2+3`, `288x288` input (10.68 MiB) |
-| Family PatchCore Banks | `models/patchcore_banks/{steel_sheet,aluminium,weld,casting,machined_part}.bin` | `768 x 28-D` coreset descriptors per family |
+| Family PatchCore Banks | `models/patchcore_banks/*.bin` | 768 x 28-D coreset per family (steel_sheet, aluminium, weld, casting, machined_part) |
 | Screw PatchCore Bank | `models/patchcore_banks/screw.bin` | `1,280 x 384-D` coreset descriptors (1.88 MiB) |
 | Llama Tokenizer | `models/tokenizer.model` | SentencePiece tokenizer (2.08 MiB) |
 | ExecuTorch Runner Binary | `bin/llama_daemon`, `bin/libllama_runner.so` | ARM64 persistent pipe daemon |
