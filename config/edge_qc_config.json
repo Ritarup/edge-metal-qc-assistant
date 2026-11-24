@@ -1,0 +1,452 @@
+{
+  "version": "2.0.0",
+  "project": "Bharat AI-SoC Unified Multi-Metal Edge QC",
+  "defect_groups": [
+    "scratch",
+    "pit_void",
+    "crack",
+    "stain_oxide",
+    "inclusion_slag",
+    "weld_porosity",
+    "deformation",
+    "machining_tear"
+  ],
+  "group_rules": {
+    "scratch": {
+      "id": 0,
+      "display_name": "Scratch / Abrasion",
+      "risk": 2,
+      "conf_threshold": 0.28,
+      "area_thresholds": {
+        "minor_max_pct": 4.0,
+        "moderate_max_pct": 16.0
+      },
+      "box_escalation_count": 4,
+      "bgr_color": [
+        0,
+        215,
+        255
+      ]
+    },
+    "pit_void": {
+      "id": 1,
+      "display_name": "Pit / Void / Blowhole",
+      "risk": 2,
+      "conf_threshold": 0.28,
+      "area_thresholds": {
+        "minor_max_pct": 5.0,
+        "moderate_max_pct": 22.0
+      },
+      "box_escalation_count": 4,
+      "bgr_color": [
+        224,
+        64,
+        251
+      ]
+    },
+    "crack": {
+      "id": 2,
+      "display_name": "Crack / Crazing",
+      "risk": 3,
+      "conf_threshold": 0.25,
+      "area_thresholds": {
+        "minor_max_pct": 2.5,
+        "moderate_max_pct": 12.0
+      },
+      "box_escalation_count": 3,
+      "bgr_color": [
+        77,
+        77,
+        255
+      ]
+    },
+    "stain_oxide": {
+      "id": 3,
+      "display_name": "Stain / Oxide / Spot",
+      "risk": 1,
+      "conf_threshold": 0.3,
+      "area_thresholds": {
+        "minor_max_pct": 12.0,
+        "moderate_max_pct": 32.0
+      },
+      "box_escalation_count": 5,
+      "bgr_color": [
+        255,
+        229,
+        0
+      ]
+    },
+    "inclusion_slag": {
+      "id": 4,
+      "display_name": "Inclusion / Slag / Scale",
+      "risk": 3,
+      "conf_threshold": 0.28,
+      "area_thresholds": {
+        "minor_max_pct": 3.5,
+        "moderate_max_pct": 14.0
+      },
+      "box_escalation_count": 3,
+      "bgr_color": [
+        0,
+        160,
+        255
+      ]
+    },
+    "weld_porosity": {
+      "id": 5,
+      "display_name": "Weld Porosity / Fusion",
+      "risk": 3,
+      "conf_threshold": 0.26,
+      "area_thresholds": {
+        "minor_max_pct": 3.0,
+        "moderate_max_pct": 12.0
+      },
+      "box_escalation_count": 3,
+      "bgr_color": [
+        180,
+        105,
+        255
+      ]
+    },
+    "deformation": {
+      "id": 6,
+      "display_name": "Deformation / Dent / Bend",
+      "risk": 3,
+      "conf_threshold": 0.28,
+      "area_thresholds": {
+        "minor_max_pct": 3.0,
+        "moderate_max_pct": 10.0
+      },
+      "box_escalation_count": 3,
+      "bgr_color": [
+        0,
+        90,
+        255
+      ]
+    },
+    "machining_tear": {
+      "id": 7,
+      "display_name": "Machining Tear / Burr",
+      "risk": 2,
+      "conf_threshold": 0.28,
+      "area_thresholds": {
+        "minor_max_pct": 3.5,
+        "moderate_max_pct": 15.0
+      },
+      "box_escalation_count": 4,
+      "bgr_color": [
+        80,
+        220,
+        120
+      ]
+    }
+  },
+  "severity_verdict_rules": {
+    "severity_levels": [
+      "NONE",
+      "MINOR",
+      "MODERATE",
+      "CRITICAL"
+    ],
+    "verdict_by_severity": {
+      "NONE": "PASS",
+      "MINOR": "REVIEW",
+      "MODERATE": "REVIEW",
+      "CRITICAL": "REJECT"
+    },
+    "anomaly_only_minor_threshold": 0.58,
+    "anomaly_only_moderate_threshold": 0.72,
+    "anomaly_only_critical_threshold": 0.88,
+    "clean_color_bgr": [
+      113,
+      204,
+      46
+    ]
+  },
+  "label_aliases": {
+    "scratch": "scratch",
+    "scratches": "scratch",
+    "abrasion": "scratch",
+    "rub_mark": "scratch",
+    "scratch_head": "scratch",
+    "scratch_neck": "scratch",
+    "scratches_severstal": "scratch",
+    "severstal_3": "scratch",
+    "class_3": "scratch",
+    "surface_scratch": "scratch",
+    "pit_void": "pit_void",
+    "pit_pore": "pit_void",
+    "pitted_surface": "pit_void",
+    "rolled_pit": "pit_void",
+    "8_yahen": "pit_void",
+    "yahen": "pit_void",
+    "punching_hole": "pit_void",
+    "1_chongkong": "pit_void",
+    "chongkong": "pit_void",
+    "hole": "pit_void",
+    "pinhole": "pit_void",
+    "pin_hole": "pit_void",
+    "pit": "pit_void",
+    "blow_hole": "pit_void",
+    "blowhole": "pit_void",
+    "shrinkage_cavity": "pit_void",
+    "void": "pit_void",
+    "non_conducting": "pit_void",
+    "pitted_surface_severstal": "pit_void",
+    "micro_pit": "pit_void",
+    "severstal_1": "pit_void",
+    "class_1": "pit_void",
+    "anomaly": "pit_void",
+    "crack": "crack",
+    "crazing": "crack",
+    "crease": "crack",
+    "9_zhehen": "crack",
+    "zhehen": "crack",
+    "crazing_severstal": "crack",
+    "crack_severstal": "crack",
+    "severstal_2": "crack",
+    "class_2": "crack",
+    "weld_crack": "crack",
+    "hot_crack": "crack",
+    "toe_crack": "crack",
+    "coating_crack": "crack",
+    "cold_shut": "crack",
+    "hot_tear": "crack",
+    "casting_crack": "crack",
+    "surface_cracks": "crack",
+    "surface_defect": "crack",
+    "micro_crack": "crack",
+    "defect": "crack",
+    "stain_oxide": "stain_oxide",
+    "stain_patch": "stain_oxide",
+    "patches": "stain_oxide",
+    "water_spot": "stain_oxide",
+    "4_shuiban": "stain_oxide",
+    "shuiban": "stain_oxide",
+    "oil_spot": "stain_oxide",
+    "5_youban": "stain_oxide",
+    "youban": "stain_oxide",
+    "silk_spot": "stain_oxide",
+    "6_siban": "stain_oxide",
+    "siban": "stain_oxide",
+    "color": "stain_oxide",
+    "color_spot": "stain_oxide",
+    "dirty_spot": "stain_oxide",
+    "oil_stain": "stain_oxide",
+    "orange_peel": "stain_oxide",
+    "oxide": "stain_oxide",
+    "stain": "stain_oxide",
+    "corrosion": "stain_oxide",
+    "rust": "stain_oxide",
+    "tarnish": "stain_oxide",
+    "discoloration": "stain_oxide",
+    "oxidation": "stain_oxide",
+    "patches_severstal": "stain_oxide",
+    "oxide_patch": "stain_oxide",
+    "severstal_4": "stain_oxide",
+    "class_4": "stain_oxide",
+    "red_iron_sheet": "stain_oxide",
+    "iron_sheet_ash": "stain_oxide",
+    "inclusion_slag": "inclusion_slag",
+    "inclusion_scale": "inclusion_slag",
+    "inclusion": "inclusion_slag",
+    "7_yiwu": "inclusion_slag",
+    "yiwu": "inclusion_slag",
+    "rolled-in_scale": "inclusion_slag",
+    "rolled_in_scale": "inclusion_slag",
+    "slag": "inclusion_slag",
+    "slag_inclusion": "inclusion_slag",
+    "slag_inclusions": "inclusion_slag",
+    "spatter": "inclusion_slag",
+    "tungsten_inclusion": "inclusion_slag",
+    "sand_inclusion": "inclusion_slag",
+    "dross": "inclusion_slag",
+    "finishing_roll_printing": "inclusion_slag",
+    "oxide_scale_of_temperature_system": "inclusion_slag",
+    "oxide_scale_of_plate_system": "inclusion_slag",
+    "weld_porosity": "weld_porosity",
+    "weld_defect": "weld_porosity",
+    "porosity": "weld_porosity",
+    "gas_pore": "weld_porosity",
+    "welding_line": "weld_porosity",
+    "weld_line": "weld_porosity",
+    "2_hanfeng": "weld_porosity",
+    "hanfeng": "weld_porosity",
+    "lack_of_fusion": "weld_porosity",
+    "lack_of_penetration": "weld_porosity",
+    "incomplete_fusion": "weld_porosity",
+    "undercut": "weld_porosity",
+    "burn_through": "weld_porosity",
+    "blowhole_weld": "weld_porosity",
+    "deformation": "deformation",
+    "bent": "deformation",
+    "bent_deformation": "deformation",
+    "flip": "deformation",
+    "flipped_part": "deformation",
+    "crescent_gap": "deformation",
+    "3_yueyawan": "deformation",
+    "yueyawan": "deformation",
+    "waist_folding": "deformation",
+    "10_yaozhe": "deformation",
+    "yaozhe": "deformation",
+    "dent": "deformation",
+    "convex_powder": "deformation",
+    "fold": "deformation",
+    "buckle": "deformation",
+    "flash": "deformation",
+    "warpage": "deformation",
+    "distortion": "deformation",
+    "warp": "deformation",
+    "manipulated_front": "deformation",
+    "missing_part": "deformation",
+    "machining_tear": "machining_tear",
+    "chatter": "machining_tear",
+    "tool_mark": "machining_tear",
+    "burr": "machining_tear",
+    "fin": "machining_tear",
+    "thread_damage": "machining_tear",
+    "thread_top": "machining_tear",
+    "thread_side": "machining_tear",
+    "chipping": "machining_tear",
+    "nick": "machining_tear",
+    "tear": "machining_tear",
+    "gouge": "machining_tear",
+    "corner_leak": "machining_tear",
+    "peeling": "machining_tear",
+    "bad_weld": "weld_porosity"
+  },
+  "material_families": {
+    "classes": [
+      "steel_sheet",
+      "aluminium",
+      "weld",
+      "casting",
+      "machined_part",
+      "not_metal"
+    ],
+    "metal_families": [
+      "steel_sheet",
+      "aluminium",
+      "weld",
+      "casting",
+      "machined_part"
+    ],
+    "reject_family": "not_metal",
+    "default_family": "steel_sheet",
+    "family_metadata": {
+      "steel_sheet": {
+        "display_name": "Rolled Steel Sheet",
+        "patchcore_always": false,
+        "default_conf_threshold": 0.28
+      },
+      "aluminium": {
+        "display_name": "Aluminium Sheet / Extrusion",
+        "patchcore_always": false,
+        "default_conf_threshold": 0.28
+      },
+      "weld": {
+        "display_name": "Weld Seam / Joint",
+        "patchcore_always": false,
+        "default_conf_threshold": 0.26
+      },
+      "casting": {
+        "display_name": "Metal Casting",
+        "patchcore_always": true,
+        "default_conf_threshold": 0.28
+      },
+      "machined_part": {
+        "display_name": "Precision Machined Part",
+        "patchcore_always": true,
+        "default_conf_threshold": 0.28
+      },
+      "not_metal": {
+        "display_name": "Non-Metal / Reject Gate",
+        "patchcore_always": false,
+        "default_conf_threshold": 1.0
+      }
+    }
+  },
+  "stage0": {
+    "model_path": "models/stage0_selector_224.onnx",
+    "input_name": "images",
+    "output_name": "output0",
+    "input_size": 224,
+    "classes": [
+      "steel_sheet",
+      "aluminium",
+      "weld",
+      "casting",
+      "machined_part",
+      "not_metal"
+    ],
+    "confidence_threshold": 0.45,
+    "not_metal_threshold": 0.55,
+    "low_confidence_patchcore_trigger": 0.6,
+    "visual_gate": {
+      "enabled": true,
+      "saturation_pixel_threshold": 65,
+      "frame_max_mean_s": 54.0,
+      "frame_max_colorful_ratio": 0.35
+    }
+  },
+  "vision": {
+    "ort_intra_op_threads": 0,
+    "hef_path": "models/unified_yolo11_640.hef",
+    "onnx_path": "models/unified_yolo11_640.onnx",
+    "hailo_device_node": "/dev/hailo0",
+    "input_name": "images",
+    "output_name": "output0",
+    "input_size": 640,
+    "num_classes": 8,
+    "num_anchors": 8400,
+    "conf_threshold": 0.28,
+    "nms_iou_threshold": 0.45,
+    "lock_in_frames": 4,
+    "tiling": {
+      "enabled": true,
+      "grid": [
+        2,
+        2
+      ],
+      "tile_size": 640,
+      "overlap": 0.2,
+      "include_full_frame": true,
+      "cross_tile_nms_iou": 0.45
+    },
+    "metallic_surface_gate": {
+      "saturation_pixel_threshold": 65,
+      "box_max_mean_s": 46.0,
+      "box_max_colorful_ratio": 0.25,
+      "frame_max_mean_s": 54.0,
+      "frame_max_colorful_ratio": 0.35
+    }
+  },
+  "patchcore": {
+    "enabled": true,
+    "reference_limit_per_family": 20,
+    "anomaly_threshold": 0.58,
+    "refs_dir": "models/patchcore_refs",
+    "banks_dir": "models/patchcore_banks",
+    "families": [
+      "steel_sheet",
+      "aluminium",
+      "weld",
+      "casting",
+      "machined_part"
+    ],
+    "always_score_families": [
+      "casting",
+      "machined_part"
+    ],
+    "low_confidence_trigger": 0.6
+  },
+  "llm": {
+    "pte_path": "models/Llama-3.2-1B-UnifiedQC-FT-INT4.pte",
+    "tokenizer_path": "models/tokenizer.model",
+    "temperature": 0.0,
+    "seq_len": 256,
+    "max_new_tokens": 150,
+    "cpu_threads": 4,
+    "system_prompt": "Industrial Metal QC AI. Write two full detailed technical sentences each (plain text): Possible Cause: <physics, material stress, process trigger> | Recommended Action: <containment, machine fix, verification>"
+  }
+}

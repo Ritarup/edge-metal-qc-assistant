@@ -1,0 +1,50 @@
+# ==============================================================================
+# Native C++ Engine Git Ignore Rules
+# ==============================================================================
+
+# Compiled Object Files & Host Binary (built via 'make' on target device)
+obj/
+*.o
+*.d
+bin/*.bin
+
+# Oversized ExecuTorch LLM Weights (>100 MB GitHub limit; place locally in models/)
+*.pte
+*.pte.part
+*.part
+
+# Caches, Virtual Environments & Python Bytecode
+.cache/
+__pycache__/
+tools/__pycache__/
+*.pyc
+*.pyo
+.build_venv/
+.llama_build_venv/
+.pytest_cache/
+.mypy_cache/
+
+# CSV Logs, Runtime State & Captured Media
+*.csv
+*.log
+uploads/
+snapshots/
+models/patchcore_refs/
+handover.md
+
+# Secrets & Credentials
+.secrets/
+*.pem
+*.key
+.env
+.env.*
+
+# OS, Editor & Temporary Files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+*.swo
+*.tmp
+*.bak
