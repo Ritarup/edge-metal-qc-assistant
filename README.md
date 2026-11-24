@@ -133,13 +133,16 @@ Training and evaluation datasets covered NEU-DET (steel surface defects), GC10-D
 | :--- | :--- |
 | Part inspection rate | 13.0 to 15.3 FPS |
 | Vision cycle latency (per-image) | 65.4 to 76.9 ms |
-| Time to first token (TTFT) | 1,588 to 1,925 ms |
-| Advisory generation rate | 13.8 to 15.1 tokens/s |
-| Total advisory latency | 4,162 to 5,963 ms |
-| End-to-end latency (frame to advisory) | 4,236 to 6,038 ms (vision cycle + Llama advisory on locked part) |
+| Time to first token (TTFT) | 1,491 to 2,070 ms |
+| Advisory generation rate | 13.2 to 13.8 tokens/s |
+| Total advisory latency | 4,639 to 6,126 ms |
+| End-to-end latency (frame to advisory) | 4,704 to 6,203 ms (vision cycle + Llama advisory on locked part) |
 | Material routing accuracy | 97.3% Val Top-1 (100.0% Top-5 on 875 images); 100.0% (26/26) on bundled E2E suite |
 | Defect precision, recall and F1 | 77.5% precision / 73.0% recall / 75.2% F1 (0.75) (Unified YOLO11n-640 Val, 827 images / 1,455 instances) |
 | Detection mAP | 50.9% mAP@50-95 (80.48% mAP@50 on Unified YOLO11n-640 Val, 827 images / 1,455 instances) |
 | Anomaly detection AUROC | 0.9905 Image / 0.9778 Pixel AUROC (MVTec `metal_nut`, 93.83% acc); 0.8200 Image AUROC / 93.3% GT hit (MVTec `screw`) |
 | Completed inspection throughput | 4.4 to 4.7 parts/min (14-15 stations logged in ~190 s with Llama advisory + 4 s hold) |
-| Peak resident memory | 203.92-351.5 MiB (`bharat_qc_native.bin`) + ~889 MiB (`llama_daemon`) ≈ 1.07-1.21 GiB (<16% of 8 GB RAM) |
+| Peak resident memory | 203.92-351.5 MiB (`bharat_qc_native.bin`) + ~889 MiB (`llama_daemon`) ≈ 1.07-1.21 GiB (<16% of 8 GB RAM); total system memory used: 1.50 GiB of 8 GB (246 MiB vision + 864 MiB Llama in DEMO telemetry) |
+| CPU utilization (4 cores) | 0.8% idle; 22.5% under DEMO load (core0 2.8%, core1 19.0%, core2 33.9%, core3 33.9%) |
+| Power draw (Pi PMIC) | 2.09 W idle; 3.49 W average (8.16 W peak) under DEMO load |
+| SoC temperature and throttling | 52.0 / 55.6 °C (avg / max) idle; 55.7 / 60.6 °C under DEMO load; no throttling |
